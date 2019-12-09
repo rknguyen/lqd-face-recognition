@@ -55,7 +55,8 @@ def knn_init():
             train_X.append(embed)
             train_Y.append(user_id)
 
-    clf.fit(train_X, train_Y)
+    if (len(train_X) > 0):
+        clf.fit(train_X, train_Y)
 
     return clf
 
