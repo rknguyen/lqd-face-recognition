@@ -8,6 +8,7 @@ import base64
 import numpy as np
 import tensorflow as tf
 from sklearn import neighbors
+from helper import confirm_checkin
 from modules.models import ArcFaceModel
 from classifier import knn_init, add_embeds
 from modules.utils import load_yaml, l2_norm
@@ -53,7 +54,8 @@ def register():
     embeds = get_embeds(base64_image)
     add_embeds(embeds, user_id)
 
-    clf.fit([embeds.numpy()[0]], [user_id])
+    global clf
+    clf = knn_init()
 
     return jsonify({
         "success": True,
@@ -67,9 +69,18 @@ def recognize():
 
     embeds = get_embeds(base64_image)
 
+    try:
+        predict = clf.predict(embeds)[0]
+    except:
+        return jsonify({
+            "error": True,
+            "message": "Không thể nhận diện được khuôn mặt"
+        })
+
+    confirm_checkin(predict, base64_image)
     return jsonify({
         "success": True,
-        "predict": clf.predict(embeds)[0]
+        "predict": predict
     })
 
 
