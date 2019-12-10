@@ -9,7 +9,6 @@ def confirm_checkin(user_id, face):
 
     try:
         r = requests.post("http://localhost:4000/checkin/create", data=payload)
-        print(r.text)
     except:
         pass
 
